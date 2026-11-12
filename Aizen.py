@@ -5,7 +5,6 @@ import logging
 import threading
 
 import telebot
-import psutil
 
 from flask import Flask, request, abort
 from google import genai
@@ -53,8 +52,6 @@ bot = telebot.TeleBot(BOT_TOKEN, threaded=False)
 ai = genai.Client(api_key=GEMINI_API_KEY)
 app = Flask(__name__)
 
-process = psutil.Process(os.getpid())
-
 
 # ==================== AIZEN PERSONALITY ====================
 
@@ -90,7 +87,7 @@ message_queue = queue.Queue(maxsize=MAX_QUEUE_SIZE)
 
 
 def get_ram_mb():
-    return process.memory_info().rss / (1024 * 1024)
+    return 0
 
 
 def reset_all_histories():
