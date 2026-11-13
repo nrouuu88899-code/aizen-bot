@@ -6,7 +6,7 @@ import threading
 
 import telebot
 
-from flask import Flask, request, abort
+from flask import Flask, request, abort, make_response
 from google import genai
 from google.genai import types
 
@@ -307,14 +307,14 @@ def webhook():
     if request.headers.get("X-Telegram-Bot-Api-Secret-Token") != WEBHOOK_SECRET:
         abort(403)
 
-        try:
-            update = telebot.types.Update.de_json(request.get_data().decode("utf-8"))
-            bot.process_new_updates([update])
-        except Exception:
-            logger.exception("Webhook update failed")
-            return "Bad Request", 400
+    try:
+        update = telebot.types.Update.de_json(request.get_data().decode("utf-8"))
+        bot.process_new_updates([update])
+    except Exception as e:
+        logger.exception("Webhook update failed: %s", e)
+        return make_response("Bad Request", 400)
 
-        return "OK", 200
+    return make_response("OK", 200)
 
         # ==================== STARTUP ====================
 
