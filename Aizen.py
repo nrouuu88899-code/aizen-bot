@@ -10,7 +10,6 @@ from flask import Flask, request, abort
 from google import genai
 from google.genai import types
 
-
 # ==================== SETTINGS ====================
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
@@ -35,7 +34,6 @@ if not BOT_TOKEN or not GEMINI_API_KEY:
 if not WEBHOOK_URL or not WEBHOOK_SECRET:
     raise RuntimeError("RENDER_EXTERNAL_URL and WEBHOOK_SECRET must be set.")
 
-
 # ==================== LOGGING ====================
 
 logging.basicConfig(
@@ -45,13 +43,11 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-
 # ==================== CLIENTS ====================
 
 bot = telebot.TeleBot(BOT_TOKEN, threaded=False)
 ai = genai.Client(api_key=GEMINI_API_KEY)
 app = Flask(__name__)
-
 
 # ==================== AIZEN PERSONALITY ====================
 
@@ -133,6 +129,7 @@ def check_memory(chat_id):
         return False
 
     return True
+
 
 def get_user_chat(chat_id):
     with memory_lock:
@@ -322,20 +319,22 @@ def webhook():
         # ==================== STARTUP ====================
 
         if __name__ == "__main__":
-            webhook_address = f"{WEBHOOK_URL}/webhook"
+            import threading
 
-            result = bot.set_webhook(
-                url=webhook_address,
-                secret_token=WEBHOOK_SECRET,
-                drop_pending_updates=True
-            )
+            def setup_webhook():
+                webhook_address = f"{WEBHOOK_URL}/webhook"
+                result = bot.set_webhook(
+                    url=webhook_address,
+                    secret_token=WEBHOOK_SECRET,
+                    drop_pending_updates=True
+                )
 
             if not result:
-                raise RuntimeError("Could not configure Telegram webhook.")
+                logger.error("Could not configure Telegram webhook.")
+            else:
+                logger.info("Webhook configured: %s", webhook_address)
 
-            logger.info("Webhook configured: %s", webhook_address)
 
-            app.run(
-                host="0.0.0.0",
-                port=int(os.getenv("PORT", "10000"))
-            )
+threading.Thread(target=setup_webhook, daemon=True).start()
+
+app.run(host="0.0.0.0", port=int(os.getenv("PORT", "10000")))
