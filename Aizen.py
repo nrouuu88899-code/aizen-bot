@@ -318,7 +318,7 @@ def webhook():
 
         # ==================== STARTUP ====================
 
-        if __name__ == "__main__":
+if __name__ == "__main__":
             import threading
 
             def setup_webhook():
@@ -329,10 +329,10 @@ def webhook():
                     drop_pending_updates=True
                 )
 
-            if not result:
-                logger.error("Could not configure Telegram webhook.")
-            else:
-                logger.info("Webhook configured: %s", webhook_address)
+                if not result:
+                    logger.error("Could not configure Telegram webhook.")
+                else:
+                    logger.info("Webhook configured: %s", webhook_address)
 
 
 threading.Thread(target=setup_webhook, daemon=True).start()
