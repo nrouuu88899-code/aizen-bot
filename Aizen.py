@@ -314,7 +314,7 @@ def webhook():
             logger.exception("Webhook update failed")
             return "Bad Request", 400
 
-            return "OK", 200
+        return "OK", 200
 
         # ==================== STARTUP ====================
 
