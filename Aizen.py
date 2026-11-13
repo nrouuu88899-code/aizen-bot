@@ -17,7 +17,7 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 WEBHOOK_URL = os.getenv("RENDER_EXTERNAL_URL", "").rstrip("/")
 WEBHOOK_SECRET = os.getenv("WEBHOOK_SECRET")
 
-MODEL = os.getenv("GEMINI_MODEL", "gemini-3.5-flash")
+MODEL = os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
 
 # Render has a 512 MB RAM limit.
 # Leave some room for the operating system and platform overhead.
