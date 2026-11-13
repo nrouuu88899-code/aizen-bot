@@ -314,26 +314,27 @@ def webhook():
             logger.exception("Webhook update failed")
             return "Bad Request", 400
 
-        return "OK", 200
+            return "OK", 200
 
         # ==================== STARTUP ====================
 
+
 if __name__ == "__main__":
-            import threading
+    import threading
 
-            def setup_webhook():
-                webhook_address = f"{WEBHOOK_URL}/webhook"
-                result = bot.set_webhook(
-                    url=webhook_address,
-                    secret_token=WEBHOOK_SECRET,
-                    drop_pending_updates=True
-                )
 
-                if not result:
-                    logger.error("Could not configure Telegram webhook.")
-                else:
-                    logger.info("Webhook configured: %s", webhook_address)
+    def setup_webhook():
+        webhook_address = f"{WEBHOOK_URL}/webhook"
+        result = bot.set_webhook(
+            url=webhook_address,
+            secret_token=WEBHOOK_SECRET,
+            drop_pending_updates=True
+        )
 
+        if not result:
+            logger.error("Could not configure Telegram webhook.")
+        else:
+            logger.info("Webhook configured: %s", webhook_address)
 
 threading.Thread(target=setup_webhook, daemon=True).start()
 
